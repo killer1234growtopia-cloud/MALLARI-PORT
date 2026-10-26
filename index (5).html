@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tapsilog Order | Fritz Gerard Mallari</title>
+<style>
+:root{--cream:#fff6e0;--paper:#fffdf6;--ink:#2b1a12;--muted:#7a6252;--red:#b91c1c;--red-d:#8f1414;--yellow:#fbbf24;--line:#e8d5a8;--ok:#15803d;--bad:#b91c1c}
+*{box-sizing:border-box}
+body{margin:0;font-family:Georgia,"Times New Roman",serif;background:var(--cream);color:var(--ink);line-height:1.5}
+body,button,input,select,textarea{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+h1,h2,h3,.disp{font-family:Georgia,"Times New Roman",serif}
+
+/* Header: shop sign with checkered cloth edge */
+.sign{background:var(--red);color:#fff;text-align:center;padding:18px 16px 26px;position:relative}
+.sign::after{content:"";position:absolute;left:0;right:0;bottom:-14px;height:14px;background:repeating-conic-gradient(var(--red) 0 25%,#fff 0 50%) 0 0/28px 28px}
+.back{display:inline-block;color:#ffe9a8;text-decoration:none;font-size:.9rem;margin-bottom:6px}
+.back:hover{text-decoration:underline}
+.sign h1{margin:0;font-size:2.6rem;letter-spacing:.02em;color:var(--yellow);text-shadow:2px 2px 0 var(--red-d)}
+.sign .tag{margin:2px 0 0;font-size:1rem;letter-spacing:.18em;text-transform:uppercase}
+.sign .tag b{color:var(--yellow)}
+.sign .hint{margin:8px auto 0;max-width:520px;font-size:.92rem;color:#ffe9a8}
+
+main{max-width:1050px;margin:0 auto;padding:36px 16px 40px;display:grid;grid-template-columns:1.6fr 1fr;gap:22px;align-items:start}
+@media(max-width:860px){main{grid-template-columns:1fr}}
+h2{font-size:1.35rem;margin:0 0 12px;color:var(--red)}
+.panel{background:var(--paper);border:2px solid var(--ink);border-radius:16px;padding:16px;box-shadow:5px 5px 0 var(--ink)}
+
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.tabs button{border:2px solid var(--ink);background:#fff;color:var(--ink);padding:7px 16px;border-radius:999px;cursor:pointer;font-weight:700}
+.tabs button.on{background:var(--yellow)}
+
+.menu{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.item{background:#fff;border:2px dashed var(--line);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:6px;position:relative}
+.item .emoji{font-size:2.2rem;line-height:1}
+.item b{font-size:1.1rem;font-family:Georgia,serif}
+.item .desc{color:var(--muted);font-size:.85rem;flex:1}
+.price{position:absolute;top:10px;right:10px;background:var(--yellow);border:2px solid var(--ink);border-radius:999px;padding:2px 10px;font-weight:800;font-size:.95rem}
+.item select{width:100%;padding:7px 8px;border-radius:8px;border:2px solid var(--line);background:#fff;color:var(--ink);font-size:.88rem}
+.item label{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+
+button.add,button.primary{background:var(--red);color:#fff;border:2px solid var(--ink);border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer;font-size:1rem}
+button.add:hover,button.primary:hover{background:var(--red-d)}
+button.ghost{background:#fff;color:var(--red);border:2px solid var(--red);border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer;font-size:1rem}
+button:disabled{opacity:.5;cursor:not-allowed}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #1d4ed8;outline-offset:2px}
+
+.cart{position:sticky;top:12px}
+.empty{color:var(--muted);padding:8px 0}
+.line{display:grid;grid-template-columns:1fr auto;gap:4px 10px;padding:10px 0;border-bottom:1px dashed var(--line)}
+.line .nm{font-weight:700}
+.line .sub{color:var(--muted);font-size:.85rem}
+.qty{display:flex;align-items:center;gap:8px}
+.qty button{width:32px;height:32px;border-radius:8px;border:2px solid var(--ink);background:#fff;color:var(--ink);cursor:pointer;font-size:1.1rem;font-weight:700}
+.rm{background:none;border:none;color:var(--bad);cursor:pointer;font-size:.85rem;padding:0;text-decoration:underline}
+.total{display:flex;justify-content:space-between;font-size:1.3rem;font-weight:800;padding:12px 0;font-family:Georgia,serif}
+
+label.f{display:block;font-size:.8rem;color:var(--muted);margin:10px 0 4px;text-transform:uppercase;letter-spacing:.05em}
+input[type=text],select.fs,textarea{width:100%;font-size:1rem;padding:9px 10px;border-radius:10px;border:2px solid var(--line);background:#fff;color:var(--ink)}
+.err{color:var(--bad);font-size:.9rem;min-height:1.3em;margin:8px 0 0;font-weight:600}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.row>*{flex:1}
+
+.receipt{border:2px dashed var(--ink);border-radius:12px;padding:14px;margin-top:14px;background:#fff}
+.receipt h3{margin:0 0 4px;font-size:1.3rem}
+.receipt .ok{color:var(--ok);font-weight:800;margin:0}
+.receipt table{width:100%;border-collapse:collapse;margin:8px 0}
+.receipt td{padding:3px 0}.receipt td:last-child{text-align:right}
+.note{color:var(--muted);font-size:.85rem}
+
+.orders{max-width:1050px;margin:0 auto;padding:0 16px 60px}
+.orders table{width:100%;border-collapse:collapse;font-size:.92rem}
+.orders th,.orders td{text-align:left;padding:9px 8px;border-bottom:1px dashed var(--line);vertical-align:top}
+.orders th{color:var(--muted)}
+.tbl{overflow-x:auto}
+.orders select{padding:6px;border-radius:8px;border:2px solid var(--line);background:#fff;color:var(--ink)}
+
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:10px 18px;border-radius:999px;opacity:0;pointer-events:none;transition:.25s;z-index:9}
+.toast.show{opacity:1;transform:translateX(-50%)}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+@media print{.sign,.menu-col,form,.orders,.toast,.cart>*:not(#receipt){display:none!important}}
+</style>
+</head>
+<body>
+<header class="sign">
+  <a class="back" href="../index.html#projects">&larr; Back to portfolio</a>
+  <h1>&#127859; Tapsilog</h1>
+  <p class="tag"><b>Tapa</b> &bull; <b>Sinangag</b> &bull; <b>Itlog</b></p>
+  <p class="hint">Every silog comes with garlic rice and an egg. Pick your meal, add it to the tray, and place your order.</p>
+</header>
+
+<main>
+  <section class="panel menu-col" aria-labelledby="mh">
+    <h2 id="mh">Menu</h2>
+    <div class="tabs" id="tabs" role="group" aria-label="Menu categories"></div>
+    <div class="menu" id="menu"></div>
+  </section>
+
+  <aside class="panel cart" aria-labelledby="ch">
+    <h2 id="ch">Your tray</h2>
+    <div id="cartList"></div>
+    <div class="total"><span>Total</span><span id="total">&#8369;0</span></div>
+
+    <form id="orderForm" novalidate>
+      <label class="f" for="cname">Your name</label>
+      <input id="cname" type="text" maxlength="40" autocomplete="name" placeholder="Juan Dela Cruz">
+      <div class="row">
+        <div>
+          <label class="f" for="otype">Order type</label>
+          <select class="fs" id="otype"><option>Dine in</option><option>Take out</option><option>Delivery</option></select>
+        </div>
+        <div>
+          <label class="f" for="pay">Payment</label>
+          <select class="fs" id="pay"><option>Cash</option><option>GCash</option></select>
+        </div>
+      </div>
+      <div id="addrBox" hidden>
+        <label class="f" for="addr">Delivery address</label>
+        <input id="addr" type="text" maxlength="120" placeholder="House no., street, barangay">
+      </div>
+      <label class="f" for="note">Note (optional)</label>
+      <textarea id="note" rows="2" maxlength="120" placeholder="Less oil, extra suka, no egg yolk..."></textarea>
+      <p class="err" id="err" role="alert"></p>
+      <div class="row">
+        <button class="primary" type="submit" id="place">Place order</button>
+        <button class="ghost" type="button" id="clearCart">Clear tray</button>
+      </div>
+    </form>
+    <div id="receipt" aria-live="polite"></div>
+  </aside>
+</main>
+
+<section class="orders" aria-labelledby="oh">
+  <div class="panel">
+    <h2 id="oh">Order history (this browser)</h2>
+    <p class="note">Orders are saved only in this browser. This is a demo, so no real payment or delivery happens.</p>
+    <div class="tbl" id="history"></div>
+    <div class="row" style="margin-top:12px;max-width:260px"><button class="ghost" type="button" id="clearAll">Delete all orders</button></div>
+  </div>
+</section>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function(){
+'use strict';
+
+// ---- Menu data: edit names, prices and categories here ----
+// egg:true means the customer can choose how the egg is cooked.
+var MENU = [
+  {id:1,  cat:'Silog',   name:'Tapsilog',   price:95, icon:'🥩', desc:'Beef tapa, garlic rice and egg', egg:true},
+  {id:2,  cat:'Silog',   name:'Tocilog',    price:85, icon:'🥓', desc:'Sweet tocino, garlic rice and egg', egg:true},
+  {id:3,  cat:'Silog',   name:'Longsilog',  price:80, icon:'🌭', desc:'Sweet longganisa, garlic rice and egg', egg:true},
+  {id:4,  cat:'Silog',   name:'Bangsilog',  price:90, icon:'🐟', desc:'Fried bangus (milkfish), garlic rice and egg', egg:true},
+  {id:5,  cat:'Silog',   name:'Hotsilog',   price:70, icon:'🌭', desc:'Hotdog, garlic rice and egg', egg:true},
+  {id:6,  cat:'Silog',   name:'Cornsilog',  price:75, icon:'🥫', desc:'Corned beef, garlic rice and egg', egg:true},
+  {id:7,  cat:'Silog',   name:'Spamsilog',  price:90, icon:'🥫', desc:'Fried luncheon meat, garlic rice and egg', egg:true},
+  {id:8,  cat:'Silog',   name:'Chicksilog', price:90, icon:'🍗', desc:'Fried chicken, garlic rice and egg', egg:true},
+  {id:9,  cat:'Silog',   name:'Porksilog',  price:85, icon:'🍖', desc:'Pork chop, garlic rice and egg', egg:true},
+  {id:10, cat:'Add-ons', name:'Extra garlic rice', price:20, icon:'🍚', desc:'One more cup of sinangag'},
+  {id:11, cat:'Add-ons', name:'Extra egg',         price:15, icon:'🍳', desc:'One fried egg', egg:true},
+  {id:12, cat:'Add-ons', name:'Extra tapa',        price:50, icon:'🥩', desc:'More beef tapa on the side'},
+  {id:13, cat:'Add-ons', name:'Sabaw (soup)',      price:25, icon:'🍲', desc:'Hot soup of the day'},
+  {id:14, cat:'Drinks',  name:'Iced Tea',       price:30, icon:'🧊', desc:'Cold and sweet'},
+  {id:15, cat:'Drinks',  name:'Cola',           price:35, icon:'🥤', desc:'Bottled soft drink'},
+  {id:16, cat:'Drinks',  name:'Black Coffee',   price:25, icon:'☕', desc:'Hot, strong and simple'},
+  {id:17, cat:'Drinks',  name:'Bottled Water',  price:20, icon:'💧', desc:'500 ml'}
+];
+var CATS = ['All','Silog','Add-ons','Drinks'];
+var EGGS = ['Sunny side up','Scrambled','Hard boiled'];
+var STATUSES = ['Pending','Cooking','Ready','Served'];
+
+// ---- Helpers ----
+function $(id){ return document.getElementById(id); }
+function money(n){ return '\u20B1' + n.toLocaleString('en-PH'); }
+function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function load(k, d){ try{ var v = localStorage.getItem(k); return v ? JSON.parse(v) : d; }catch(e){ return d; } }
+function save(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); return true; }catch(e){ return false; } }
+var toastEl = $('toast'), toastT;
+function say(t){ toastEl.textContent = t; toastEl.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(function(){ toastEl.classList.remove('show'); }, 1800); }
+function find(id){ return MENU.filter(function(m){ return m.id === id; })[0]; }
+// A cart key is "id" or "id|egg style", so the same dish with a different egg is a separate line.
+function parse(key){ var p = key.split('|'); return {m: find(+p[0]), egg: p[1] || ''}; }
+
+// ---- State ----
+var cart = load('ts_cart', {});
+var orders = load('ts_orders', []);
+var cat = 'All';
+// Drop anything that is no longer on the menu
+Object.keys(cart).forEach(function(k){ if(!find(+k.split('|')[0])) delete cart[k]; });
+
+// ---- Menu ----
+function drawTabs(){
+  $('tabs').innerHTML = CATS.map(function(c){
+    return '<button type="button" data-c="' + c + '" class="' + (c === cat ? 'on' : '') + '" aria-pressed="' + (c === cat) + '">' + c + '</button>';
+  }).join('');
+}
+function drawMenu(){
+  $('menu').innerHTML = MENU.filter(function(m){ return cat === 'All' || m.cat === cat; }).map(function(m){
+    var egg = m.egg ? '<div><label for="egg' + m.id + '">Egg</label><select id="egg' + m.id + '">' + EGGS.map(function(e){ return '<option>' + e + '</option>'; }).join('') + '</select></div>' : '';
+    return '<div class="item"><span class="price">' + money(m.price) + '</span><span class="emoji" aria-hidden="true">' + m.icon + '</span><b>' + esc(m.name) + '</b><span class="desc">' + esc(m.desc) + '</span>' + egg +
+      '<button class="add" type="button" data-id="' + m.id + '" aria-label="Add ' + esc(m.name) + ' to tray">Add to tray</button></div>';
+  }).join('');
+}
+$('tabs').addEventListener('click', function(e){ var b = e.target.closest('button'); if(!b) return; cat = b.dataset.c; drawTabs(); drawMenu(); });
+$('menu').addEventListener('click', function(e){
+  var b = e.target.closest('.add'); if(!b) return;
+  var m = find(+b.dataset.id), sel = $('egg' + m.id), key = m.id + (m.egg && sel ? '|' + sel.value : '');
+  cart[key] = Math.min((cart[key] || 0) + 1, 20);
+  save('ts_cart', cart); drawCart(); say('Added ' + m.name);
+});
+
+// ---- Cart ----
+function cartTotal(){ return Object.keys(cart).reduce(function(s, k){ return s + parse(k).m.price * cart[k]; }, 0); }
+function drawCart(){
+  var keys = Object.keys(cart);
+  $('place').disabled = !keys.length;
+  $('total').textContent = money(cartTotal());
+  if(!keys.length){ $('cartList').innerHTML = '<p class="empty">Your tray is empty. Pick a silog from the menu.</p>'; return; }
+  $('cartList').innerHTML = keys.map(function(k){
+    var p = parse(k), m = p.m, q = cart[k], ek = esc(k);
+    return '<div class="line"><div><div class="nm">' + esc(m.name) + '</div><div class="sub">' + (p.egg ? esc(p.egg) + ' &middot; ' : '') + money(m.price) + ' each</div></div><div style="text-align:right"><b>' + money(m.price * q) + '</b></div>' +
+      '<div class="qty"><button type="button" data-a="dec" data-k="' + ek + '" aria-label="Less ' + esc(m.name) + '">&minus;</button><span aria-label="Quantity">' + q + '</span><button type="button" data-a="inc" data-k="' + ek + '" aria-label="More ' + esc(m.name) + '">+</button></div>' +
+      '<div style="text-align:right"><button class="rm" type="button" data-a="rm" data-k="' + ek + '">Remove</button></div></div>';
+  }).join('');
+}
+$('cartList').addEventListener('click', function(e){
+  var b = e.target.closest('button[data-a]'); if(!b) return;
+  var k = b.dataset.k, a = b.dataset.a;
+  if(a === 'inc') cart[k] = Math.min(cart[k] + 1, 20);
+  if(a === 'dec'){ cart[k]--; if(cart[k] <= 0) delete cart[k]; }
+  if(a === 'rm') delete cart[k];
+  save('ts_cart', cart); drawCart();
+});
+$('clearCart').addEventListener('click', function(){ cart = {}; save('ts_cart', cart); drawCart(); $('err').textContent = ''; });
+
+// ---- Form ----
+$('otype').addEventListener('change', function(){ $('addrBox').hidden = this.value !== 'Delivery'; });
+
+$('orderForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  var name = $('cname').value.trim(), type = $('otype').value, addr = $('addr').value.trim(), err = $('err');
+  if(!Object.keys(cart).length){ err.textContent = 'Your tray is empty.'; return; }
+  if(!name){ err.textContent = 'Please enter your name.'; $('cname').focus(); return; }
+  if(type === 'Delivery' && !addr){ err.textContent = 'Please enter a delivery address.'; $('addr').focus(); return; }
+  err.textContent = '';
+
+  var next = load('ts_next', 1001);
+  var order = {
+    no: 'TS-' + next,
+    time: new Date().toISOString(),
+    name: name, type: type, pay: $('pay').value, addr: type === 'Delivery' ? addr : '',
+    note: $('note').value.trim(),
+    status: 'Pending',
+    items: Object.keys(cart).map(function(k){ var p = parse(k); return {name: p.m.name + (p.egg ? ' (' + p.egg + ')' : ''), price: p.m.price, qty: cart[k]}; })
+  };
+  order.total = order.items.reduce(function(s, i){ return s + i.price * i.qty; }, 0);
+
+  orders.unshift(order);
+  if(!save('ts_orders', orders)){ orders.shift(); err.textContent = 'Could not save the order in this browser.'; return; }
+  save('ts_next', next + 1);
+  showReceipt(order);
+  cart = {}; save('ts_cart', cart); drawCart(); drawHistory();
+  $('note').value = '';
+});
+
+function showReceipt(o){
+  $('receipt').innerHTML = '<div class="receipt"><p class="ok">Order placed! Salamat po!</p><h3>' + esc(o.no) + '</h3>' +
+    '<div class="note">' + esc(o.name) + ' &middot; ' + esc(o.type) + ' &middot; ' + esc(o.pay) + (o.addr ? '<br>' + esc(o.addr) : '') + '</div>' +
+    '<table>' + o.items.map(function(i){ return '<tr><td>' + i.qty + ' &times; ' + esc(i.name) + '</td><td>' + money(i.price * i.qty) + '</td></tr>'; }).join('') +
+    '<tr><td><b>Total</b></td><td><b>' + money(o.total) + '</b></td></tr></table>' +
+    (o.note ? '<div class="note">Note: ' + esc(o.note) + '</div>' : '') +
+    '<div class="row" style="margin-top:10px"><button class="ghost" type="button" onclick="window.print()">Print receipt</button></div></div>';
+  $('receipt').scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+// ---- Order history ----
+function drawHistory(){
+  if(!orders.length){ $('history').innerHTML = '<p class="empty">No orders yet.</p>'; $('clearAll').disabled = true; return; }
+  $('clearAll').disabled = false;
+  $('history').innerHTML = '<table><thead><tr><th>Order</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th></tr></thead><tbody>' +
+    orders.map(function(o, i){
+      var d = new Date(o.time).toLocaleString('en-PH', {dateStyle:'medium', timeStyle:'short'});
+      var opts = STATUSES.map(function(s){ return '<option' + (s === o.status ? ' selected' : '') + '>' + s + '</option>'; }).join('');
+      return '<tr><td><b>' + esc(o.no) + '</b><br><span class="note">' + esc(d) + '</span></td><td>' + esc(o.name) + '<br><span class="note">' + esc(o.type) + ' &middot; ' + esc(o.pay) + '</span></td>' +
+        '<td>' + o.items.map(function(x){ return x.qty + ' &times; ' + esc(x.name); }).join('<br>') + '</td><td>' + money(o.total) + '</td>' +
+        '<td><select data-i="' + i + '" aria-label="Status of ' + esc(o.no) + '">' + opts + '</select></td></tr>';
+    }).join('') + '</tbody></table>';
+}
+$('history').addEventListener('change', function(e){
+  var s = e.target.closest('select[data-i]'); if(!s) return;
+  orders[+s.dataset.i].status = s.value; save('ts_orders', orders); say('Status updated');
+});
+$('clearAll').addEventListener('click', function(){
+  if(confirm('Delete all saved orders?')){ orders = []; save('ts_orders', orders); drawHistory(); $('receipt').innerHTML = ''; say('Orders deleted'); }
+});
+
+drawTabs(); drawMenu(); drawCart(); drawHistory();
+})();
+</script>
+</body>
+</html>
